@@ -1,49 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>HTML Desktop</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>GoldenMoon-DE</title>
+<style>
+/* FULLSCREEN BODY AND DESKTOP */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+    background: black url("wallpaper.png") no-repeat center center;
+    background-size: cover;
+}
+
+#desktop {
+    position: absolute;
+    inset: 0;
+    background: url("wallpaper.jpg") no-repeat center center fixed;
+    background-size: cover;
+    z-index: 0;
+}
+
+/* TOP TASKBAR - CLOCK / TEXT */
+#taskbar-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;  
+    background: rgba(20, 20, 30, 0.85);
+    display: flex;
+    align-items: center;       /* vertically centers contents */
+    justify-content: space-between;
+    padding: 0 10px;
+    color: white;
+    z-index: 20;
+    box-sizing: border-box;    
+    overflow: hidden;          
+}
+
+#taskbar-top #clock {
+    min-width: 70px;
+    text-align: right;
+    line-height: 40px;         
+    font-size: 14px;           
+}
+
+#taskbar-top #top-text {
+    line-height: 40px;
+    font-size: 14px;
+}
+
+/* BOTTOM TASKBAR - START + APPS */
+#taskbar-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 48px;
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: white;
+    z-index: 10;
+}
+
+.taskbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.start-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4f46e5, #22c55e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.taskbar-center {
+    display: flex;
+    gap: 12px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.app {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.app.active::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+/* TASKBAR RIGHT */
+.taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+/* Prevent selection */
+#taskbar-top, #taskbar-bottom, 
+#taskbar-top *, #taskbar-bottom * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: auto;
+    cursor: default;
+}
+</style>
 </head>
 <body>
 
 <div id="desktop"></div>
 
-<div id="taskbar">
-    <div class="left">GoldenMoon-DE</div>
-    <div class="center">Desktop</div>
-    <div class="right" id="clock"></div>
+<!-- TOP TASKBAR -->
+<div id="taskbar-top">
+    <div id="top-text">GoldenMoon-DE</div>
+    <div id="clock"></div>
+</div>
+
+<!-- BOTTOM TASKBAR -->
+<div id="taskbar-bottom">
+    <div class="taskbar-left">
+        <div class="start-btn">⊞</div>
+    </div>
+
+    <div class="taskbar-center">
+        <div class="app active">🌐</div>
+        <div class="app">📁</div>
+        <div class="app">⚙️</div>
+        <div class="app">🖥️</div>
+    </div>
+
+    <div class="taskbar-right"></div>
 </div>
 
 <script>
+// CLOCK FOR TOP TASKBAR (with seconds)
 function updateClock() {
     const now = new Date();
     document.getElementById("clock").innerText =
-        now.toLocaleTimeString();
+        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 setInterval(updateClock, 1000);
 updateClock();
-</script>
 
+// ANTI-COPY PROTECTION
+const allTaskbars = [document.getElementById('taskbar-top'), document.getElementById('taskbar-bottom')];
 
-<!-- Anti copy of toolbar texts -->
-
-<script>
-taskbarItems.forEach(el => {
-    // Prevent selecting text by mouse drag
-    el.addEventListener('mousedown', e => e.preventDefault());
-    el.addEventListener('selectstart', e => e.preventDefault());
-    el.addEventListener('dragstart', e => e.preventDefault());
-
-    // Lock cursor
-    el.style.cursor = 'default';
+allTaskbars.forEach(taskbar => {
+    const items = taskbar.querySelectorAll('*');
+    items.forEach(el => {
+        el.addEventListener('mousedown', e => e.preventDefault());
+        el.addEventListener('selectstart', e => e.preventDefault());
+        el.addEventListener('dragstart', e => e.preventDefault());
+        el.style.cursor = 'default';
+    });
+    taskbar.addEventListener('mousedown', e => e.preventDefault());
+    taskbar.addEventListener('selectstart', e => e.preventDefault());
+    taskbar.style.cursor = 'default';
 });
-
-// Optional: whole taskbar
-taskbar.addEventListener('mousedown', e => e.preventDefault());
-taskbar.addEventListener('selectstart', e => e.preventDefault());
-taskbar.style.cursor = 'default';
-
 </script>
+
 </body>
 </html>
