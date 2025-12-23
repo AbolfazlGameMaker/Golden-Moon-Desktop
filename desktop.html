@@ -56,6 +56,52 @@ allTaskbars.forEach(taskbar => {
     taskbar.addEventListener('selectstart', e => e.preventDefault());
     taskbar.style.cursor = 'default';
 });
+// --- Communication Bridge ---
+
+let currentApps = [];
+
+function sendToPython(data) {
+    window.webkit.messageHandlers.bridge.postMessage(JSON.stringify(data));
+}
+
+function receiveDockData(apps) {
+    currentApps = apps;
+    const container = document.querySelector(".taskbar-center");
+    container.innerHTML = "";
+
+    apps.forEach(app => {
+        const appEl = document.createElement("div");
+        appEl.className = "app";
+        appEl.id = `dock-${app.id}`;
+        appEl.innerHTML = `<img src="${app.icon_path}" style="width:28px; height:28px;">`;
+        
+        appEl.onclick = () => {
+            if (appEl.classList.contains("running")) {
+                sendToPython({ action: "focus_app", command: app.exec });
+            } else {
+                sendToPython({ action: "launch_app", command: app.exec });
+            }
+        };
+        container.appendChild(appEl);
+    });
+}
+
+function updateRunningIndicators(runningList) {
+    currentApps.forEach(app => {
+        const el = document.getElementById(`dock-${app.id}`);
+        if (!el) return;
+        // Simple match: if the exec name is in the window class list
+        const isRunning = runningList.some(name => app.exec.toLowerCase().includes(name));
+        el.classList.toggle("running", isRunning);
+    });
+}
+
+function onLaunchResult(success, error) {
+    if (!success) alert("Failed: " + error);
+}
+
+// Initial Request
+window.onload = () => sendToPython({ action: "get_dock_apps" });
 </script>
 
 </body>

@@ -85,23 +85,40 @@ html, body {
 
 .taskbar-center {
     display: flex;
-    gap: 12px;
+    gap: 4px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .app {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.15);
+    position: relative;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    position: relative;
+    transition: transform 0.2s;
 }
+
+.app:hover {
+    transform: scale(1.15);
+}
+
+
+/* The Running Underline */
+.app.running::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 20%;
+    width: 60%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
 
 .app.active::after {
     content: "";
