@@ -1,46 +1,81 @@
 #!/bin/bash
-
-# Exit on error globally
 set -e
 
-echo "Updating package lists... This part will be skipped if it doesn't work for 100s"
+echo "Checking sudo access..."
+sudo -v
 
-# Disable exit-on-error for this block
-set +e
-if ! timeout 100s sudo apt update; then
-    echo "apt update took too long, skipping..."
+# --------------------------------------------------
+# System dependencies for pyenv + PyGObject
+# --------------------------------------------------
+echo "Installing system dependencies..."
+sudo apt update
+sudo apt install -y \
+  git curl wget build-essential \
+  libssl-dev zlib1g-dev libbz2-dev \
+  libreadline-dev libsqlite3-dev \
+  llvm libncursesw5-dev xz-utils tk-dev \
+  libxml2-dev libxmlsec1-dev libffi-dev \
+  liblzma-dev \
+  gobject-introspection libgirepository-2.0-dev \
+  libglib2.0-dev libcairo2-dev pkg-config cmake
+
+# --------------------------------------------------
+# Install pyenv (if not already installed)
+# --------------------------------------------------
+if [ ! -d "$HOME/.pyenv" ]; then
+    echo "Installing pyenv..."
+    curl https://pyenv.run | bash
 fi
-set -e  # re-enable exit-on-error
 
-echo "Installing Git and dependencies..."
-sudo apt install -y git software-properties-common build-essential \
-  gobject-introspection libgirepository-2.0-dev libglib2.0-dev \
-  libcairo2-dev pkg-config cmake wget curl
+# --------------------------------------------------
+# Setup pyenv environment (non-interactive safe)
+# --------------------------------------------------
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 
-# Install Python 3.12
-echo "Adding deadsnakes PPA for Python 3.12..."
-sudo add-apt-repository -y ppa:deadsnakes/ppa
-echo "Updating package lists for repo change... This part will be skipped if it doesn't work for 100s"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
-# Disable exit-on-error for this block
-set +e
-if ! timeout 100s sudo apt update; then
-    echo "failed to load update deadsnake repo. skipping...."
+# --------------------------------------------------
+# Install Python 3.12 via pyenv
+# --------------------------------------------------
+PYTHON_VERSION="3.12.2"
+
+if ! pyenv versions | grep -q "$PYTHON_VERSION"; then
+    echo "Installing Python $PYTHON_VERSION via pyenv..."
+    pyenv install "$PYTHON_VERSION"
 fi
-set -e  # re-enable exit-on-error
-sudo apt install -y python3.12 python3.12-venv python3.12-dev python3-pip
 
-# Make python3.12 the default python3 (optional)
-echo "Updating alternatives for python3..."
-sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 2
-sudo update-alternatives --config python3
+pyenv global "$PYTHON_VERSION"
 
-# Upgrade pip
-echo "Updating pip to latest version..."
-python3 -m pip install --upgrade pip
+# --------------------------------------------------
+# Upgrade pip (SAFE – pyenv Python)
+# --------------------------------------------------
+python -m pip install --upgrade pip setuptools wheel
 
-# Install PyGObject
+# --------------------------------------------------
+# Install PyGObject (NO PEP 668 issue)
+# --------------------------------------------------
 echo "Installing PyGObject..."
-python3 -m pip install PyGObject
+python -m pip install PyGObject
 
-echo "Done! Git, Python 3.12, and PyGObject are installed."
+# --------------------------------------------------
+# Clone your project
+# --------------------------------------------------
+echo "Cloning Golden-Moon-Desktop..."
+git clone https://github.com/AbolfazlGameMaker/Golden-Moon-Desktop.git
+
+# --------------------------------------------------
+# Finish
+# --------------------------------------------------
+echo "Installation complete!"
+echo "Python version:"
+python --version
+echo
+echo "To run later:"
+echo "  cd Golden-Moon-Desktop"
+echo "  python main.py"
+echo
+echo "This shell will exit in 8 seconds..."
+sleep 8
+exit 0
