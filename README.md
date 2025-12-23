@@ -25,10 +25,9 @@ The desktop environment is under heavy development. Expect breaking changes, inc
 
 ## Installation
 - First install the setup.sh
-- run it
-- wait until it completes
-- clone the repo
-- run desktop.py
+- run it in the folder you wanna install our program
+- open the golden-moon-desktop folder that was made by the program
+- Run desktop.py
 
 ## Contributing
 
@@ -47,3 +46,7 @@ This software is provided **as-is**, without any warranty. Use at your own risk.
 
 **Golden Moon**
 2025
+
+##### Our Team:
+- Radin6262
+- AbolfazlGameMaker
