@@ -9,47 +9,258 @@
         body {
             margin: 0;
             padding: 0;
-            width: 100vw;
+            width: 100%; 
             height: 100vh;
             overflow: hidden;
-            background-color: black;
+            background-color: #0a0a0a;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            transition: background-image 0.5s ease-in-out;
+            transition: background-image 0.8s ease-in-out;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        /* FIX: Clean styling for the Start Button Image */
+        /* Glassmorphism Effect for Taskbars */
+        #taskbar-top, #taskbar-bottom {
+            background: rgba(15, 15, 15, 0.7) !important;
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border-top: 1px solid rgba(255, 215, 0, 0.15);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            left: 0;
+        }
+
+        #taskbar-top {
+            top: 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            border-top: none;
+            justify-content: space-between;
+            padding: 0 25px;
+            color: #eee;
+            height: 38px;
+            z-index: 1001;
+            box-sizing: border-box;
+        }
+
+        #taskbar-bottom {
+            bottom: 0;
+            height: 50px;
+            z-index: 1001;
+        }
+
+        #clock {
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.9);
+            font-variant-numeric: tabular-nums;
+            font-family: 'Consolas', monospace, sans-serif;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        #top-text {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ffd700, #ffae00, #ffd700);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
+            animation: shineText 3s linear infinite;
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        #start-menu {
+            position: absolute;
+            bottom: 60px;
+            left: 15px;
+            width: 320px;
+            height: 450px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,215,0,0.05);
+            transform-origin: bottom left;
+            transition: all 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            will-change: transform, opacity;
+            overflow: hidden;
+            
+            /* Fixed Animation: Start hidden but with transition potential */
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) translateY(50px) rotate(-1deg);
+            pointer-events: none;
+        }
+
+        /* Fixed Animation: Visible state */
+        #start-menu.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0) rotate(0deg);
+            pointer-events: auto;
+        }
+
+        .start-menu-content {
+            overflow-y: auto;
+            flex: 1;
+        }
+        .start-menu-content::-webkit-scrollbar { width: 4px; }
+        .start-menu-content::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.3); border-radius: 10px; }
+
+        .start-menu-footer {
+            margin-top: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .power-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .power-buttons button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 18px;
+        }
+
+        .power-buttons button:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .shutdown-btn:hover {
+            background: #e74c3c !important;
+            border-color: #ff6b6b !important;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4) !important;
+        }
+
         .start-btn {
             display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            width: 48px; 
+            width: 55px; 
             height: 100%;
-            /* These lines remove any background/borders from style.css */
             background: transparent !important;
             border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            transition: transform 0.1s ease;
+            transition: all 0.3s ease;
         }
 
-        .start-btn:hover {
-            background: rgba(255, 255, 255, 0.1) !important; /* Subtle highlight on hover */
-            transform: scale(1.05); /* Slight pop effect */
-        }
+        .start-btn:hover { background: rgba(255, 255, 255, 0.1) !important; }
 
         .start-icon {
-            width: 30px; 
-            height: 30px;
+            width: 32px; 
+            height: 32px;
             object-fit: contain;
+            border-radius: 8px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
-            border-radius: 4px; /* Softens the corners of the JPG */
         }
 
-        .hidden { display: none; }
+        .start-btn:hover .start-icon {
+            transform: scale(1.15) rotate(10deg);
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+        }
+
+        .taskbar-center {
+            display: flex;
+            gap: 12px;
+            padding: 0 15px;
+            flex: 1;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .app {
+            padding: 6px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            will-change: transform;
+            animation: appAppear 0.5s backwards;
+        }
+
+        @keyframes appAppear {
+            from { opacity: 0; transform: translateY(20px) scale(0.5); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .app img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app:hover { background: rgba(255, 255, 255, 0.12); }
+        .app:active { transform: scale(0.8); }
+
+        .app:hover img {
+            transform: scale(1.35) translateY(-8px);
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+        }
+
+        .app.running::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffd700, 0 0 15px #ffae00;
+            pointer-events: none;
+            animation: pulseRunning 2s infinite;
+        }
+
+        @keyframes pulseRunning {
+            0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+            100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+        }
+
+        #desktop {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
@@ -57,15 +268,15 @@
 <div id="desktop"></div>
 
 <div id="taskbar-top">
-    <div id="top-text">GoldenMoon-DE</div>
+    <div id="top-text">Golden Moon</div>
     <div id="clock"></div>
 </div>
 
 <div id="taskbar-bottom">
     <div class="taskbar-left">
-        <div id="start-menu" class="hidden">
+        <div id="start-menu">
             <div class="start-menu-content">
-                <div class="spacer"></div>
+                <div class="spacer" style="height: 20px;"></div>
             </div>
             <div class="start-menu-footer">
                 <div class="power-buttons">
@@ -77,41 +288,47 @@
             </div>
         </div>
         
-        <div class="start-btn" onclick="toggleStartMenu()">
-            <img src="start.jpg" alt="Start" class="start-icon">
+        <div class="start-btn" onclick="toggleStartMenu(event)">
+            <img src="start.jpg" alt="Start" class="start-icon" onerror="this.src='default_start.png'; this.style.backgroundColor='#ffd700'">
         </div>
     </div>
 
     <div class="taskbar-center" id="dock-container"></div>
-
-    <div class="taskbar-right"></div>
+    <div class="taskbar-right" style="width: 55px;"></div>
 </div>
 
 <script>
-/* --- UI UTILITIES --- */
+let currentApps = [];
+
 function updateClock() {
+    const clockEl = document.getElementById("clock");
+    if(!clockEl) return;
     const now = new Date();
-    document.getElementById("clock").innerText =
-        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    clockEl.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-function toggleStartMenu() {
-    document.getElementById('start-menu').classList.toggle('hidden');
+function toggleStartMenu(event) {
+    if(event) event.stopPropagation();
+    const menu = document.getElementById('start-menu');
+    menu.classList.toggle('visible');
 }
 
-document.getElementById('desktop').addEventListener('click', () => {
-    document.getElementById('start-menu').classList.add('hidden');
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        document.getElementById('start-menu').classList.remove('visible');
+    }
 });
 
-document.getElementById('start-menu').addEventListener('click', (e) => e.stopPropagation());
+document.getElementById('desktop').addEventListener('click', () => {
+    document.getElementById('start-menu').classList.remove('visible');
+});
 
-/* --- BACKGROUND MANAGEMENT --- */
 const DEFAULT_BG = "wallpaper.png";
 
 function applyBackground(path) {
-    const finalPath = (path && path.trim() !== "") ? path : DEFAULT_BG;
+    const finalPath = (path && typeof path === 'string' && path.trim() !== "") ? path : DEFAULT_BG;
     document.body.style.backgroundImage = `url('${finalPath}')`;
 }
 
@@ -119,25 +336,32 @@ function receiveSavedBackground(savedPath) {
     applyBackground(savedPath);
 }
 
-/* --- COMMUNICATION BRIDGE --- */
-let currentApps = [];
-
 function sendToPython(data) {
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage(JSON.stringify(data));
+    try {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
+            window.webkit.messageHandlers.bridge.postMessage(JSON.stringify(data));
+        }
+    } catch (err) {
+        console.error("Communication error:", err);
     }
 }
 
 function receiveDockData(apps) {
+    if(!Array.isArray(apps)) return;
     currentApps = apps;
     const container = document.getElementById("dock-container");
+    if(!container) return;
     container.innerHTML = "";
-    apps.forEach(app => {
+    apps.forEach((app, index) => {
         const appEl = document.createElement("div");
         appEl.className = "app";
         appEl.id = `dock-${app.id}`;
-        appEl.innerHTML = `<img src="${app.icon_path}" style="width:28px; height:28px;">`;
-        appEl.onclick = () => {
+        appEl.title = app.name || "";
+        appEl.style.animationDelay = `${index * 0.05}s`;
+        
+        appEl.innerHTML = `<img src="${app.icon_path}" onerror="this.src='default_icon.png'">`;
+        appEl.onclick = (e) => {
+            e.stopPropagation();
             const action = appEl.classList.contains("running") ? "focus_app" : "launch_app";
             sendToPython({ action: action, command: app.exec });
         };
@@ -146,25 +370,32 @@ function receiveDockData(apps) {
 }
 
 function updateRunningIndicators(runningList) {
+    if(!Array.isArray(runningList) || !currentApps.length) return;
+    
     currentApps.forEach(app => {
         const el = document.getElementById(`dock-${app.id}`);
         if (!el) return;
-        const isRunning = runningList.some(name => app.exec.toLowerCase().includes(name));
+        const isRunning = runningList.some(procName => {
+            const execLower = app.exec.toLowerCase();
+            const procLower = procName.toLowerCase();
+            return execLower.includes(procLower) || procLower.includes(execLower);
+        });
         el.classList.toggle("running", isRunning);
     });
 }
 
-/* --- INITIALIZATION --- */
 window.onload = () => {
     applyBackground(DEFAULT_BG);
-    sendToPython({ action: "get_dock_apps" });
-    sendToPython({ action: "get_power_icons" });
-    sendToPython({ action: "get_saved_background" });
+    setTimeout(() => {
+        sendToPython({ action: "get_dock_apps" });
+        sendToPython({ action: "get_power_icons" });
+        sendToPython({ action: "get_saved_background" });
+    }, 100);
 };
 
 [document.getElementById('taskbar-top'), document.getElementById('taskbar-bottom')].forEach(bar => {
-    bar.addEventListener('mousedown', e => e.preventDefault());
-    bar.addEventListener('selectstart', e => e.preventDefault());
+    if(!bar) return;
+    bar.addEventListener('contextmenu', e => e.preventDefault());
 });
 </script>
 
