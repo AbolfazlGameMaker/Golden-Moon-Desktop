@@ -17,8 +17,39 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            transition: background-image 0.5s ease-in-out; /* Smooth fade when changing */
+            transition: background-image 0.5s ease-in-out;
         }
+
+        /* FIX: Clean styling for the Start Button Image */
+        .start-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer;
+            width: 48px; 
+            height: 100%;
+            /* These lines remove any background/borders from style.css */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            transition: transform 0.1s ease;
+        }
+
+        .start-btn:hover {
+            background: rgba(255, 255, 255, 0.1) !important; /* Subtle highlight on hover */
+            transform: scale(1.05); /* Slight pop effect */
+        }
+
+        .start-icon {
+            width: 30px; 
+            height: 30px;
+            object-fit: contain;
+            pointer-events: none;
+            border-radius: 4px; /* Softens the corners of the JPG */
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -45,18 +76,19 @@
                 </div>
             </div>
         </div>
-        <div class="start-btn" onclick="toggleStartMenu()">⊞</div>
+        
+        <div class="start-btn" onclick="toggleStartMenu()">
+            <img src="start.jpg" alt="Start" class="start-icon">
+        </div>
     </div>
 
-    <div class="taskbar-center" id="dock-container">
-        </div>
+    <div class="taskbar-center" id="dock-container"></div>
 
     <div class="taskbar-right"></div>
 </div>
 
 <script>
 /* --- UI UTILITIES --- */
-
 function updateClock() {
     const now = new Date();
     document.getElementById("clock").innerText =
@@ -76,23 +108,18 @@ document.getElementById('desktop').addEventListener('click', () => {
 document.getElementById('start-menu').addEventListener('click', (e) => e.stopPropagation());
 
 /* --- BACKGROUND MANAGEMENT --- */
-
 const DEFAULT_BG = "wallpaper.png";
 
 function applyBackground(path) {
-    // If path is null, empty, or undefined, use wallpaper.png
     const finalPath = (path && path.trim() !== "") ? path : DEFAULT_BG;
-    console.log("Setting background to:", finalPath);
     document.body.style.backgroundImage = `url('${finalPath}')`;
 }
 
-// Called by Python to send the saved string from config.json
 function receiveSavedBackground(savedPath) {
     applyBackground(savedPath);
 }
 
 /* --- COMMUNICATION BRIDGE --- */
-
 let currentApps = [];
 
 function sendToPython(data) {
@@ -128,18 +155,13 @@ function updateRunningIndicators(runningList) {
 }
 
 /* --- INITIALIZATION --- */
-
 window.onload = () => {
-    // 1. Set immediate default background
     applyBackground(DEFAULT_BG);
-    
-    // 2. Fetch system data from Python
     sendToPython({ action: "get_dock_apps" });
     sendToPython({ action: "get_power_icons" });
     sendToPython({ action: "get_saved_background" });
 };
 
-// Protection against dragging/selection on taskbars
 [document.getElementById('taskbar-top'), document.getElementById('taskbar-bottom')].forEach(bar => {
     bar.addEventListener('mousedown', e => e.preventDefault());
     bar.addEventListener('selectstart', e => e.preventDefault());
